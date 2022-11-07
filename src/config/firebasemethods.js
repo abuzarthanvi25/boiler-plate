@@ -3,6 +3,8 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 import { getDatabase, ref, set, push, onValue } from "firebase/database";
 
@@ -72,11 +74,25 @@ let checkUser = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
-        resolve(uid);
+        resolve(`Admin ${uid} already logged in`);
+        console.log(uid);
       } else {
-        reject("user nhi hai");
+        reject("Admin Not Logged In!");
+        console.log(object);
       }
     });
+  });
+};
+
+let logoutUser = () => {
+  return new Promise((resolve, reject) => {
+    signOut(auth)
+      .then(() => {
+        resolve("Successfully Logged Out...");
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
 };
 
@@ -151,4 +167,12 @@ let deleteData = (node, listId) => {
   }
 };
 
-export { signUpUser, loginUser, checkUser, sendData, getData, deleteData };
+export {
+  signUpUser,
+  loginUser,
+  checkUser,
+  logoutUser,
+  sendData,
+  getData,
+  deleteData,
+};
